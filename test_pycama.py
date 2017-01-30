@@ -65,4 +65,5 @@ class TestPyCaMa(unittest.TestCase):
     def test_dimensions(self):
         self.assertEqual(A.shape, (len(test_problem.trans),len(test_problem.banks)))
         self.assertEqual(fcast.shape, (test_problem.h,len(test_problem.banks)))
-		self.assertEqual(len(b0), len(test_problem.banks))
+        self.assertEqual(len(b0), len(test_problem.banks))
+        self.assertTrue(len(test_problem.banks) > 1)

@@ -44,11 +44,23 @@ class multibank(object):
         # Checks dimension agreement 
         if self.A.shape != (len(self.trans), len(self.banks)):
             self.A = np.zeros((len(self.trans), len(self.banks)))
-            print("Dimensions do not agree")
+            print("Incidence matrix dimensions do not agree with banks or transactions")
         if len(self.bmin) != len(self.banks):
-            self.A = np.zeros((len(self.trans), len(self.banks)))
             print("Minimum balances must agree with banks")
-
+        if len(self.gzero) != len(self.gone):
+            self.gzero = []
+            self.gone = []
+            print("Fixed and variable transaction costs must agree")
+        if len(self.gzero) != len(self.trans):
+            self.trans = []
+            print("Transaction costs must agree with transactions")
+        if len(self.v) != len(self.banks):
+            self.banks = []
+            print("Holding costs must agree with banks")
+        if len(self.banks) <= 1:
+            self.banks = []
+            print("A system must have at least two banks")
+			
     def describe(self):
         """Describe the main characteristics of the system"""
 		
