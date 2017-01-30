@@ -46,6 +46,7 @@ class multibank(object):
             self.A = np.zeros((len(self.trans), len(self.banks)))
             print("Incidence matrix dimensions do not agree with banks or transactions")
         if len(self.bmin) != len(self.banks):
+			self.banks = []	    	
             print("Minimum balances must agree with banks")
         if len(self.gzero) != len(self.gone):
             self.gzero = []
