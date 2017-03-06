@@ -141,10 +141,12 @@ class multibank(object):
         m.update()
 
         # Bounds and binary variables constraints
-        K = 9999999999999
+        K = 9999
+	k = 0.001
         for tau in time_range:
             for i in tr_range:
-                m.addConstr(var[tau][i] <= K*fixed[tau][i], name="c%d%d" %(tau, i))  # K is a very large number
+                m.addConstr(var[tau][i] <= K*fixed[tau][i], name="cbig%d%d" %(tau, i))  # K is a very large number
+		m.addConstr(var[tau][i] >= k*fixed[tau][i], name="csmall%d%d" %(tau, i))  # k is a very small number
         m.update() 
 
         # Optimization
@@ -254,10 +256,12 @@ class multibank(object):
         m.update()
 
         # Bounds and binary variables constraints
-        K = 9999999999999
+        K = 9999
+	k = 0.001
         for tau in time_range:
             for i in tr_range:
-                m.addConstr(var[tau][i] <= K * fixed[tau][i], name = "c%d%d" %(tau, i))  # K is a very large number
+                m.addConstr(var[tau][i] <= K*fixed[tau][i], name="cbig%d%d" %(tau, i))  # K is a very large number
+		m.addConstr(var[tau][i] >= k*fixed[tau][i], name="csmall%d%d" %(tau, i))  # k is a very small number
         m.update() 
 
         # Setting the objectives
