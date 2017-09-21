@@ -7,4 +7,4 @@ Cash managers usually deal with multiple banks to receive payments from customer
 
 PyCaMa is a Python-Gurobi tool aimed to automate multiobjective decision-making in cash management. PyCaMa contributes to support scientific discovery in cash management by: (i) empowering cash managers to perform experiments, e.g., on the utility of forecasts; (ii) eliciting the best precautionary minimum balances; (iii) allowing an easy extension to a multiobjective approach by considering additional objectives such as the risk of the policies. In addition, PyCaMa support daily decision-making in cash management by providing a tool to derive optimal policies within a real-world context where cash management systems with multiple bank accounts are the rule rather than the exception.
 
-All source codes are published under the 3-Clause BSD License (see license.txt)
+All source codes are published under the 3-Clause BSD License (see license.txt) with respect to the Python code exclusively.
