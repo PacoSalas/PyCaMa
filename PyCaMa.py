@@ -30,20 +30,20 @@ class multibank(object):
         # Checks types of input data
         if type(self.gzero) != dict:
             self.gzero = dict([(i,0) for i in self.trans])
-            self.A = np.zeros((len(self.trans), len(self.banks)))
+            self.A = np.zeros((len(self.banks), len(self.trans)))
             print("Fixed costs must be a dictionary")
         if type(self.gone) != dict:
             self.gone = dict([(i,0) for i in self.trans])
-            self.A = np.zeros((len(self.trans), len(self.banks)))
+            self.A = np.zeros((len(self.banks), len(self.trans)))
             print("Variable costs must be a dictionary")
         if type(self.v) != dict:
             self.v = dict([(i,0) for i in self.banks])
-            self.A = np.zeros((len(self.trans), len(self.banks)))
+            self.A = np.zeros((len(self.banks), len(self.trans)))
             print("Holding costs must be a dictionary")
         
         # Checks dimension agreement 
-        if self.A.shape != (len(self.trans), len(self.banks)):
-            self.A = np.zeros((len(self.trans), len(self.banks)))
+        if self.A.shape != (len(self.banks), len(self.trans)):
+            self.A = np.zeros((len(self.banks), len(self.trans)))
             print("Incidence matrix dimensions do not agree with banks or transactions")
         if len(self.bmin) != len(self.banks):
             self.banks = []
@@ -127,26 +127,26 @@ class multibank(object):
                 bal[tau].append(m.addVar(obj = self.v[j], vtype = GRB.CONTINUOUS, name="b%d,%d" %(tau, j)))
         m.update()
 
-        # Intitial transition constraints and minimum balance constraints
+        # Initial transition constraints and minimum balance constraints
         for j in bk_range:
-            m.addConstr(b0[j] + fcast[0][j] + LinExpr(self.A.T[j], var[0][:]) == bal[0][j], 'IniBal%d'% j)
+            m.addConstr(b0[j] + fcast[0][j] + LinExpr(self.A[j], var[0][:]) == bal[0][j], 'IniBal%d'% j)
             m.addConstr(bal[0][j] >= self.bmin[j], 'Bmin%s'%j)
         m.update()
 
         # Rest of transition constraints
         for tau in range(1, self.h):
             for j in bk_range:
-                m.addConstr(bal[tau-1][j] + fcast[tau][j] + LinExpr(self.A.T[j],var[tau][:]) == bal[tau][j], 'Bal%d,%d'%(tau, j))
+                m.addConstr(bal[tau-1][j] + fcast[tau][j] + LinExpr(self.A[j],var[tau][:]) == bal[tau][j], 'Bal%d,%d'%(tau, j))
                 m.addConstr(bal[tau][j] >= self.bmin[j], 'Bmin%d%d'%(tau,j))
         m.update()
 
         # Bounds and binary variables constraints
         K = 9999
-	k = 0.001
+        k = 0.0001
         for tau in time_range:
             for i in tr_range:
-                m.addConstr(var[tau][i] <= K*fixed[tau][i], name="cbig%d%d" %(tau, i))  # K is a very large number
-		m.addConstr(var[tau][i] >= k*fixed[tau][i], name="csmall%d%d" %(tau, i))  # k is a very small number
+                m.addConstr(var[tau][i] <= K * fixed[tau][i], name="c1%d%d" %(tau, i))  # K is a very large number
+                m.addConstr(var[tau][i] >= k * fixed[tau][i], name="c2%d%d" %(tau, i))  # k is a very small number
         m.update() 
 
         # Optimization
@@ -244,24 +244,24 @@ class multibank(object):
 
         # Intitial transition constraints and minimum balance constraints
         for j in bk_range:
-            m.addConstr(b0[j] + fcast[0][j] + LinExpr(self.A.T[j], var[0][:]) == bal[0][j], 'IniBal%d'% j)
+            m.addConstr(b0[j] + fcast[0][j] + LinExpr(self.A[j], var[0][:]) == bal[0][j], 'IniBal%d'% j)
             m.addConstr(bal[0][j] >= self.bmin[j], 'Bmin%s'%j)
         m.update()
 
         # Rest of transition constraints
         for tau in range(1, self.h):
             for j in bk_range:
-                m.addConstr(bal[tau-1][j] + fcast[tau][j] + LinExpr(self.A.T[j],var[tau][:]) == bal[tau][j], 'Bal%d,%d'%(tau, j))
+                m.addConstr(bal[tau-1][j] + fcast[tau][j] + LinExpr(self.A[j],var[tau][:]) == bal[tau][j], 'Bal%d,%d'%(tau, j))
                 m.addConstr(bal[tau][j] >= self.bmin[j], 'Bmin%d%d'%(tau,j))
         m.update()
 
         # Bounds and binary variables constraints
         K = 9999
-	k = 0.001
+        k = 0.0001
         for tau in time_range:
             for i in tr_range:
-                m.addConstr(var[tau][i] <= K*fixed[tau][i], name="cbig%d%d" %(tau, i))  # K is a very large number
-		m.addConstr(var[tau][i] >= k*fixed[tau][i], name="csmall%d%d" %(tau, i))  # k is a very small number
+                m.addConstr(var[tau][i] <= K * fixed[tau][i], name = "c%d%d" %(tau, i))  # K is a very large number
+                m.addConstr(var[tau][i] >= k * fixed[tau][i], name="c2%d%d" %(tau, i))  # k is a very small number
         m.update() 
 
         # Setting the objectives
